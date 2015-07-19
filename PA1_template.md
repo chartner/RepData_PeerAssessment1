@@ -35,7 +35,8 @@ Loading and preprocessing the data
 
 
 ```r
-activity <- read.csv("/Users/Billy/Desktop/coursera/activity.csv")
+unzip("activity.zip")
+activity <- read.csv("activity.csv")
 ```
 
 What is mean total number of steps taken per day?
