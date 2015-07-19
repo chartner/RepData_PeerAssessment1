@@ -1,11 +1,6 @@
----
-title: "Reproducible Research"
-author: "Chris Hartner"
-date: "July 14, 2015"
-output:
-  html_document:
-    keep_md: yes
----
+# Reproducible Research
+Chris Hartner  
+July 14, 2015  
 
 
 Reproducible Research - Peer Assessment 1
@@ -38,10 +33,9 @@ Analysis
 Loading and preprocessing the data
 
 
-```{r}
 
+```r
 activity <- read.csv("/Users/Billy/Desktop/coursera/activity.csv")
-
 ```
 
 What is mean total number of steps taken per day?
@@ -53,29 +47,58 @@ For this part of the assignment, you can ignore the missing values in the datase
 * Calculate and report the mean and median total number of steps taken per day
 
 
-```{r}
 
+```r
 library(dplyr)
+```
 
+```
+## 
+## Attaching package: 'dplyr'
+## 
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 test <- activity %>% 
         group_by(date) %>%
         summarise(total= sum(steps)) 
 
 mean(test$total, na.rm=T)
-median(test$total, na.rm=T)
+```
 
+```
+## [1] 10766.19
+```
+
+```r
+median(test$total, na.rm=T)
+```
+
+```
+## [1] 10765
+```
+
+```r
 options(scipen=1, digits=2)
 
 hist(test$total, main= "Distribution of Steps Per Day", 
      xlab="Number of Steps",
      ylab="Number of Days (Frequency)", breaks= 20, col="blue")
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
 
 ###Ignoring NA's:   
 
-**mean**   `r mean(test$total, na.rm=T)`   
-**median** `r median(test$total, na.rm=T)`.
+**mean**   10766.19   
+**median** 10765.
 
 
 
@@ -84,21 +107,31 @@ What is the average daily activity pattern?
 * Make a time series plot(i.e. type="l") of the 5-minute interval (x-axis) and the average number of steps taken averaged across all days (y-axis).
 * Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r}
+
+```r
 test1 <- activity %>% 
         group_by(interval) %>%
         summarise(avg..steps = mean(steps, na.rm=TRUE))
 
 filter(test1, avg..steps==max(avg..steps))
+```
 
+```
+## Source: local data frame [1 x 2]
+## 
+##   interval avg..steps
+## 1      835        206
+```
+
+```r
 plot(test1$interval, test1$avg..steps, type="l",
      main= "Daily Activity Pattern", 
      xlab= "5 Min. Interval", 
      ylab="Average Number of Steps",
      col="blue")
-
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
 
 The **interval** with the max steps is **835** with the **maximum number of steps**: **206**.
 
@@ -112,8 +145,8 @@ Note that there are a number of days/intervals where there are missing values (c
 * Compare the new dataset with the first one created (ignoring NA's)
     
 
-```{r}
 
+```r
 na <- sum(is.na(activity))
 
 rawact <- activity
@@ -129,19 +162,19 @@ hist( test2$total1,
       main="Imputed Avg Steps Per Day",
       xlab="Total number of steps",
       ylab="Days", breaks= 20, col="blue")
-
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
 
 ###Replacing NA's
 
-There are **`r na` NA's** that were replaced with the average. The adjusted mean and median are
+There are **2304 NA's** that were replaced with the average. The adjusted mean and median are
 
-**mean** `r mean(test2$total1)`   
-**median** `r median(test2$total1)`   
+**mean** 10766.19   
+**median** 10766.19   
 
 
-Imputing missing data with the average for that data did not change the mean, however, since there are more values closer to the mean (i.e. an additional `r  sum(is.na(activity))`) the median is also closer and in fact equal to the mean.  Imputing data in this dataset had minimal effect.  
+Imputing missing data with the average for that data did not change the mean, however, since there are more values closer to the mean (i.e. an additional 2304) the median is also closer and in fact equal to the mean.  Imputing data in this dataset had minimal effect.  
 
 Are there differences in activity patterns between weekdays and weekends?
 ===
@@ -151,7 +184,8 @@ For this part the weekdays() function may be of some help here. Use the dataset 
 
 * Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
-```{r}
+
+```r
 library(ggplot2)
 
 rawact$date <- as.Date(rawact$date)
@@ -169,8 +203,9 @@ ggplot( test3, aes(interval, avg...steps, color=Day)) +
         geom_line(aes(group=Day)) +
         ggtitle("Daily Activity") +
         facet_wrap(~Day)
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
 
 ###Differences
 The weekday activity (Monday - Friday) had a higher number of steps earlier in the morning as opposed to the weekend, however, the weekends had a higher overall number of steps taken.  The difference is an increased level of activity on the weekends.
